@@ -68,7 +68,6 @@ class MovieRepositoryTest {
     void getMovieById(){
         movieRepository.save(avatarMovie);
 
-        //Optional.get() without isPresent() check BAK!!!
         Movie newMovie=movieRepository.findById(avatarMovie.getId()).get();
 
         assertNotNull(newMovie);
