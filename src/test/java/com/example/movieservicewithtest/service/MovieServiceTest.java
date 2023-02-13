@@ -57,11 +57,7 @@ class MovieServiceTest {
         assertNotNull(newMovie);
 
         assertThat(newMovie.getName()).isEqualTo("Avatar");
-        //assertEquals("Aatar",newMovie.getName());
 
-        //ikisi de aynı işi yapıyor
-        //Hamcrest matcher => assertThat() => kod ve hata okunabilirliği daha kolay yazıyor internette
-        //JUnit assert => assertEqual()
 
     }
 
@@ -81,7 +77,6 @@ class MovieServiceTest {
 
     @Test
     void getMovieById() {
-        //anyLong() => ArgumentMatchers sınıfından. Herhangi bir long bekliyorum demek. Peki ya sıfır ya da null gelirse?
         when(movieRepository.findById(anyLong())).thenReturn(Optional.of(avatarMovie));
         Movie existingMovie=movieService.getMovieById(avatarMovie.getId());
 
