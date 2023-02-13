@@ -31,11 +31,10 @@ class MovieControllerTest {
 
 
     private MockMvc mockMvc;
-    // Spring’in MockMvc nesnesi standalone ortamda HTTP web istekleri oluşturup, bunları göndermemizi ve
-    // dönen sonuçları incelememizi ve kontrol etmemizi sağlamaktadır.
+
 
     ObjectMapper objectMapper=new ObjectMapper().registerModule(new JavaTimeModule());
-    //Json'lara serialize ve deserialize eder.
+
 
 
     @Mock
@@ -49,8 +48,8 @@ class MovieControllerTest {
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this); //openMock() =>mockito annotations'ları initialize eder.
-        //MockitoSession nedir BAK!!!
+        MockitoAnnotations.openMocks(this); 
+
         this.mockMvc= MockMvcBuilders.standaloneSetup(movieController).build();
     }
 
@@ -60,11 +59,11 @@ class MovieControllerTest {
 
         mockMvc.perform(post("/movie")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(avatarMovie))) //nesneyi json'a çevirdik
-                .andExpect(status().isCreated()) //isCreated=>201 isOk()=>200
+                        .content(objectMapper.writeValueAsString(avatarMovie)))
+                .andExpect(status().isCreated()) 
                 .andExpect(jsonPath("$.name", is(avatarMovie.getName())))
                 .andExpect(jsonPath("$.genera", is(avatarMovie.getGenera())))
-                .andExpect(jsonPath("$.releaseDate", Matchers.is(avatarMovie.getReleaseDate().toString()))); //releaseDate format exception BAK!!!
+                .andExpect(jsonPath("$.releaseDate", Matchers.is(avatarMovie.getReleaseDate().toString()))); 
     }
 
 
