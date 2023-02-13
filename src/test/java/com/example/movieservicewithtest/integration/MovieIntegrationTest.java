@@ -21,8 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-//WebEnvironment.RANDOM_PORT bir porta açılarak test gerçekleşir.
-//WebEnvironment.MOCK mevcut bir portun davranışları mock'lanarak(kopyalanarak) test edilir.
+
 public class MovieIntegrationTest {
 
     @LocalServerPort
@@ -31,8 +30,6 @@ public class MovieIntegrationTest {
     private String baseUrl="http://localhost";
 
     private static RestTemplate restTemplate;
-    //RestTemplate, client tarafında senkronize HTTP isteklerini yürütmek için Spring kütüphanesi içindeki default sınıftır.
-    //RestTemplate Kısaca java üzerinden Rest servislere ulaşıp response almamızı sağlar.
 
     @Autowired
     private MovieRepository movieRepository;
@@ -50,7 +47,6 @@ public class MovieIntegrationTest {
         baseUrl=baseUrl + ":" + port + "/movie";
 
         avatarMovie = new Movie();
-        //unit test gibi değil. Veritabanı kaydı gerçekleşiyor. Id otomatik verildiği için boş bıraktık
         avatarMovie.setName("Avatar");
         avatarMovie.setGenera("Action");
         avatarMovie.setReleaseDate(LocalDate.of(2000, Month.APRIL, 23));
@@ -76,7 +72,7 @@ public class MovieIntegrationTest {
         avatarMovie.setGenera("Action");
         avatarMovie.setReleaseDate(LocalDate.of(2000, Month.APRIL, 23));
 
-        Movie newMovie=restTemplate.postForObject(baseUrl,avatarMovie,Movie.class); //url-request object-response type-uri variable
+        Movie newMovie=restTemplate.postForObject(baseUrl,avatarMovie,Movie.class); 
 
         assertNotNull(newMovie);
         assertThat(newMovie.getId()).isNotNull();
@@ -85,7 +81,7 @@ public class MovieIntegrationTest {
     @Test
     void shouldFetchMovieTest(){
 
-        List<Movie> list=restTemplate.getForObject(baseUrl, List.class);//url-response type
+        List<Movie> list=restTemplate.getForObject(baseUrl, List.class);
 
         assertThat(list.size()).isEqualTo(2);
     }
@@ -93,7 +89,7 @@ public class MovieIntegrationTest {
     @Test
     void shouldFetchOneMovieTest(){
 
-        Movie existingMovie=restTemplate.getForObject(baseUrl+"/"+avatarMovie.getId(),Movie.class);//url-response type
+        Movie existingMovie=restTemplate.getForObject(baseUrl+"/"+avatarMovie.getId(),Movie.class);
 
         assertNotNull(existingMovie);
         assertEquals("Avatar",existingMovie.getName());
@@ -111,7 +107,7 @@ public class MovieIntegrationTest {
     void shouldUpdateMovieTest(){
         avatarMovie.setGenera("Fantacy");
 
-        restTemplate.put(baseUrl+"/{id}",avatarMovie,avatarMovie.getId());//url-request object-uri variable
+        restTemplate.put(baseUrl+"/{id}",avatarMovie,avatarMovie.getId());
 
         Movie existingMovie=restTemplate.getForObject(baseUrl+"/"+avatarMovie.getId(),Movie.class);
 
@@ -120,20 +116,4 @@ public class MovieIntegrationTest {
         assertEquals("Fantacy",existingMovie.getGenera());
     }
 }
-/*
-Oluşturulan yazılım modüllerinin, bir araya getirerek doğruluğunu sağlamaktır. Yazılım ürünü için oluşturulan tüm modüller bir araya getirilir ve bu şekilde test edilir. Burada ki amaç: metotlar birim başına testten geçerken, modüller halinde bir araya geldiğinde bazı hatalara sebep oluyor olabilirler. Entegrasyon testleri ile ise bu tarz yazılım ürünü problemlerinin henüz canlı (prod) ortama çıkmadan veya geliştirdiğimiz yeni bir modülün de sorunsuz çalışabileceğinden hızlı bir şekilde emin olabilmemizi sağlamaktadır.
 
-1) Big Bang Integration Test:
-En yaygın kullanılan entegrasyon test tipidir. Geliştirilmiş tüm modüller bir araya getirilerek yapılan testtir. Hızlı ve kolay bir şekilde birbirleri ile beraber çalıştıklarında anlam ifade eden modüllerin doğruluğunu sağlar fakat birim başı metot doğruluğunun gözden kaçınılması olasıdır.
-
-2) Top-Down Integration Test:
-Bu entegrasyon testindeki amaç ise modüller arası geçiş yapılırken hatalı olan modülün kolay bir şekilde bulunabilmesini sağlamaktır. Test işlemi yukarıdan aşağı doğru gerçekleşmektedir ve her birinin test işleminden başarılı bir şekilde geçerek ilerlemesi gerekmektedir. Her bir modül testleri stub olarak adlandırılmaktadır. Modül ağacının son bacaklarında ise her bir stub kendi içerisinde test edilerek test işlemi sonuçlandırılır.
-
-3) Bottom-Up Integration Test:
-Bu test yöntemi ise Unit Testler ile beraber ilerlemektedir. Alt tarafta bulunan tüm stublar, Unit Testlerden geçirilerek yukarıya doğru ilerlenir. Top-Down’da olduğu gibi yukarıya ilerlerken Unit Testler aracılığı ile her test başarılı olarak sonuçlanmalıdır. Tüm stublar için Unit Testler oluşturulduktan sonra bir üst seviyede hepsi bir ele alınarak test işlemi yapılır. Bu test tipindeki amaç ise stublardan başlayarak hataların en kısa sürede bulunabilmesidir.
-
-4) Sandwich/Hybrid Integration Test:
-Modüllerin bir kısmı Top-Down, bir diğer kısmı ise Bottom-Up tiplerini kullanılarak gerçekleştirilen test tipidir. Bu karma tipteki amaç ise bazı modülleri gruplara ayırabilirken diğer modülleri ise ayrı bir şekilde test edebilmektir.
-
-
- */
